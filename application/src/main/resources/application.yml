@@ -1,6 +1,12 @@
 spring:
   profiles:
     active: dev
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  datasource:
+    driver-class-name: org.h2.Driver
   mvc:
     locale: en
 

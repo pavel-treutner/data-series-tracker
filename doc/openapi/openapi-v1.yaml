@@ -84,7 +84,7 @@ components:
       type: number
       format: 'double'
       example: 20.04
-    ErrorEntity:
+    Error:
       type: object
       required:
         - error_code
@@ -99,19 +99,15 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorItemEntity'
-    ErrorItemEntity:
+            $ref: '#/components/schemas/ErrorItem'
+    ErrorItem:
       type: object
       required:
         - error_code
-        - error_description
       properties:
         error_code:
           type: string
           example: 'FIELD_INVALID_VALUE'
-        error_description:
-          type: string
-          example: 'Field value format is not valid.'
         subject:
           type: string
           example: 'user'
@@ -147,7 +143,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorEntity'
+            $ref: '#/components/schemas/Error'
     PostDatapointResponse:
       description: Response body for operation `Post datapoint`.
       content:

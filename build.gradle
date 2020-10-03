@@ -2,6 +2,8 @@ buildscript {
     ext {
         dependencyManagementVersion = '1.0.10.RELEASE'
         springBootVersion = '2.3.4.RELEASE'
+        h2Version = '1.4.200'
+        apacheCommonsLangVersion = '3.11'
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
@@ -35,7 +37,11 @@ subprojects {
         dependencies {
             dependencySet(group: 'org.springframework.boot', version: "${springBootVersion}") {
                 entry 'spring-boot-starter-web'
+                entry 'spring-boot-starter-data-jpa'
+                entry 'spring-boot-starter-validation'
             }
+            dependency "com.h2database:h2:${h2Version}"
+            dependency "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}"
         }
     }
 }
