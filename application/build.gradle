@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+bootJar {
+    archiveVersion.set('')
+    launchScript()
+}
