@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Data Series Tracker API
+  version: 1.0.0
+  description: |
+    Public API provided by `Data Series Tracker`.
+tags:
+  - name: Datapoint
+    description: Datapoint management.
+paths:
+  /datapoints:
+    post:
+      operationId: create-datapoint
+      summary: 'Store a new datapoint.'
+      tags:
+        - Datapoint
+      requestBody:
+        $ref: '#/components/requestBodies/PostDatapointRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/PostDatapointResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /devices/{device}/datapoints:
+    parameters:
+      - $ref: '#/components/parameters/device'
+    delete:
+      operationId: delete-device-datapoints
+      summary: 'Delete all datapoints associated with a given device.'
+      tags:
+        - Datapoint
+      responses:
+        '204':
+          description: 'Datapoints deleted successfully.'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /users/{user}/datapoints:
+    parameters:
+      - $ref: '#/components/parameters/user'
+    delete:
+      operationId: delete-user-datapoints
+      summary: 'Delete all datapoints associated with a given user.'
+      tags:
+        - Datapoint
+      responses:
+        '204':
+          description: 'Datapoints deleted successfully.'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  parameters:
+    user:
+      name: user
+      description: 'User identifier.'
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/userId'
+    device:
+      name: device
+      description: 'Device identifier.'
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/deviceId'
+  schemas:
+    userId:
+      type: string
+      example: 'harkonnen'
+      minLength: 1
+      maxLength: 50
+      pattern: '^[a-zA-Z0-9]+$'
+    deviceId:
+      type: string
+      example: 'SpaceballOne'
+      minLength: 1
+      maxLength: 50
+      pattern: '^[a-zA-Z0-9]+$'
+    timestamp:
+      type: string
+      format: 'date-time'
+      example: '2020-08-15T10:15:27.000+02:00'
+    value:
+      type: number
+      format: 'double'
+      example: 20.04
+    ErrorEntity:
+      type: object
+      required:
+        - error_code
+        - error_description
+      properties:
+        error_code:
+          type: string
+          example: 'VALIDATION_ERROR'
+        error_description:
+          type: string
+          example: 'Validation failed.'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItemEntity'
+    ErrorItemEntity:
+      type: object
+      required:
+        - error_code
+        - error_description
+      properties:
+        error_code:
+          type: string
+          example: 'FIELD_INVALID_VALUE'
+        error_description:
+          type: string
+          example: 'Field value format is not valid.'
+        subject:
+          type: string
+          example: 'user'
+        details:
+          type: string
+          example: 'The value of field "user" contains invalid character: "#".'
+    Datapoint:
+      type: object
+      required:
+        - timestamp
+        - value
+        - device
+        - user
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/timestamp'
+        value:
+          $ref: '#/components/schemas/value'
+        device:
+          $ref: '#/components/schemas/deviceId'
+        user:
+          $ref: '#/components/schemas/userId'
+  requestBodies:
+    PostDatapointRequest:
+      description: Request body related to operation `Post datapoint`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Datapoint'
+  responses:
+    ErrorResponse:
+      description: Some error occurred. Please look at response body for more details.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEntity'
+    PostDatapointResponse:
+      description: Response body for operation `Post datapoint`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Datapoint'
