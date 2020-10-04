@@ -39,9 +39,14 @@ subprojects {
                 entry 'spring-boot-starter-web'
                 entry 'spring-boot-starter-data-jpa'
                 entry 'spring-boot-starter-validation'
+                entry 'spring-boot-starter-test'
             }
             dependency "com.h2database:h2:${h2Version}"
             dependency "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}"
         }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }

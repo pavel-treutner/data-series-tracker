@@ -32,6 +32,9 @@ public class Datapoint {
     @Column
     private String user;
 
+    public Datapoint() {
+    }
+
     public Datapoint(Long id, LocalDateTime timestamp, double value, String device, String user) {
         this.id = id;
         this.timestamp = timestamp;
