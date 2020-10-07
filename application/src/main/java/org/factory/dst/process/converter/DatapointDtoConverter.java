@@ -24,8 +24,8 @@ public final class DatapointDtoConverter {
             return null;
         }
 
-        return new Datapoint(null, source.getTimestamp().toLocalDateTime(), source.getValue(), source.getDevice(),
-                source.getUser());
+        return new Datapoint(null, source.getTimestamp().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(),
+                source.getValue(), source.getDevice(), source.getUser());
     }
 
     /**

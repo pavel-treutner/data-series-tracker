@@ -1,2 +1,3 @@
 rootProject.name = 'data-series-tracker'
 include 'application'
+include 'integration-tests'

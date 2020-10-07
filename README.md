@@ -5,7 +5,7 @@ A simple RESTful web service providing API for measure (datapoint) management an
 * Java JDK 11
 
 ## Building the service
-Run `./gradlew clean build`. An executable file `application/build/libs/application.jar` will be created. 
+Run `./gradlew clean build integrationTests`. An executable file `application/build/libs/application.jar` will be created.
 
 ## Documentation
 Public API documentation can be found in file [./doc/openapi/openapi-v1.yaml](./doc/openapi/openapi-v1.yaml) (OpenAPI 3.0.0).
