@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,6 +21,14 @@ public interface DatapointRepository extends JpaRepository<Datapoint, Long> {
      * @return Optional.
      */
     Optional<Datapoint> findFirstByDevice(String device);
+
+    /**
+     * Find items assigned to the device.
+     *
+     * @param device Device id.
+     * @return List of items.
+     */
+    List<Datapoint> findByDevice(String device);
 
     /**
      * Delete all items assigned to the device.
@@ -37,6 +46,14 @@ public interface DatapointRepository extends JpaRepository<Datapoint, Long> {
      * @return Optional.
      */
     Optional<Datapoint> findFirstByUser(String user);
+
+    /**
+     * Find items assigned to the user.
+     *
+     * @param user User id.
+     * @return List of items.
+     */
+    List<Datapoint> findByUser(String user);
 
     /**
      * Delete all items assigned to the user.

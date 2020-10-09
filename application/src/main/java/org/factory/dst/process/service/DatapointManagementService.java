@@ -50,20 +50,20 @@ public class DatapointManagementService {
      * @throws NotFoundException If no datapoint is found.
      */
     @Transactional
-    public void deleteByDevice(String device) {
+    public void deleteByDevice(final String device) {
         datapointRepository.findFirstByDevice(device).orElseThrow(() -> new NotFoundException("No datapoint for device found."));
         log.info("Deleting datapoints by device {}", device);
         datapointRepository.deleteByDevice(device);
     }
 
     /**
-     * Delete all datapoints assigned to an user.
+     * Delete all datapoints assigned to a user.
      *
      * @param user User id.
      * @throws NotFoundException If no datapoint is found.
      */
     @Transactional
-    public void deleteByUser(String user) {
+    public void deleteByUser(final String user) {
         datapointRepository.findFirstByUser(user).orElseThrow(() -> new NotFoundException("No datapoint for user found."));
         log.info("Deleting datapoints by user {}", user);
         datapointRepository.deleteByUser(user);

@@ -7,6 +7,8 @@ info:
 tags:
   - name: Datapoint
     description: Datapoint management.
+  - name: Statistics
+    description: Computed statistics.
 paths:
   /datapoints:
     post:
@@ -45,6 +47,32 @@ paths:
       responses:
         '204':
           description: 'Datapoints deleted successfully.'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /statistics/devices/{device}/avg:
+    parameters:
+      - $ref: '#/components/parameters/device'
+    get:
+      operationId: get-device-averages
+      summary: 'Return list of 15 minute averages for a device.'
+      tags:
+        - Statistics
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAveragesResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /statistics/users/{user}/avg:
+    parameters:
+      - $ref: '#/components/parameters/user'
+    get:
+      operationId: get-user-averages
+      summary: 'Return list of 15 minute averages for a user.'
+      tags:
+        - Statistics
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAveragesResponse'
         '404':
           $ref: '#/components/responses/ErrorResponse'
 components:
@@ -130,6 +158,16 @@ components:
           $ref: '#/components/schemas/deviceId'
         user:
           $ref: '#/components/schemas/userId'
+    Average:
+      type: object
+      required:
+        - timestamp
+        - value
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/timestamp'
+        value:
+          $ref: '#/components/schemas/value'
   requestBodies:
     PostDatapointRequest:
       description: Request body related to operation `Post datapoint`.
@@ -150,3 +188,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Datapoint'
+    GetAveragesResponse:
+      description: Response body containing computed average values.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Average'
