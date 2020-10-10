@@ -1,9 +1,11 @@
 package org.factory.dst.process.service;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.factory.dst.persistence.entity.Datapoint;
 import org.factory.dst.persistence.repository.DatapointRepository;
 import org.factory.dst.process.dto.AverageDto;
 import org.factory.dst.process.exception.NotFoundException;
+import org.factory.dst.process.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,21 @@ public class StatisticsService {
      */
     @Transactional(readOnly = true)
     public List<AverageDto> getAveragesByDevice(final String device) {
-        return getAverages(datapointRepository.findByDevice(device), "device");
+        return computeAverages(datapointRepository.findByDevice(device), "device");
+    }
+
+    /**
+     * Get 15 minutes moving average values for a device.
+     *
+     * @param device Device id.
+     * @param windowSize Window size.
+     * @throws ValidationException On validation errors.
+     * @throws NotFoundException If no datapoint is found.
+     */
+    public List<AverageDto> getMovingAveragesByDevice(final String device, final int windowSize) {
+        checkWindowSize(windowSize);
+        List<AverageDto> averages = getAveragesByDevice(device);
+        return computeMovingAverages(averages, windowSize);
     }
 
     /**
@@ -52,10 +68,24 @@ public class StatisticsService {
      */
     @Transactional(readOnly = true)
     public List<AverageDto> getAveragesByUser(final String user) {
-        return getAverages(datapointRepository.findByUser(user), "user");
+        return computeAverages(datapointRepository.findByUser(user), "user");
     }
 
-    private List<AverageDto> getAverages(final List<Datapoint> datapoints, final String entityName) {
+    /**
+     * Get 15 minutes moving average values for a user.
+     *
+     * @param user User id.
+     * @param windowSize Window size.
+     * @throws ValidationException On validation errors.
+     * @throws NotFoundException If no datapoint is found.
+     */
+    public List<AverageDto> getMovingAveragesByUser(final String user, final int windowSize) {
+        checkWindowSize(windowSize);
+        List<AverageDto> averages = getAveragesByUser(user);
+        return computeMovingAverages(averages, windowSize);
+    }
+
+    private List<AverageDto> computeAverages(final List<Datapoint> datapoints, final String entityName) {
         if (datapoints.isEmpty()) {
             throw new NotFoundException("No datapoint for " + entityName + " found.");
         }
@@ -71,9 +101,23 @@ public class StatisticsService {
         ).sorted(Comparator.comparing(AverageDto::getTimestamp)).collect(Collectors.toList());
     }
 
-    private long assignTimeWindow(Datapoint datapoint) {
+    private long assignTimeWindow(final Datapoint datapoint) {
         long timestamp = datapoint.getTimestamp().atZone(ZoneOffset.UTC).toEpochSecond();
         long window = timestamp / TIME_WINDOW_DURATION;
         return timestamp < 0 ? --window : window;
+    }
+
+    private void checkWindowSize(final int windowSize) {
+        if (windowSize < 1) {
+            throw new ValidationException("Window size must be greater than 0.");
+        }
+    }
+
+    private List<AverageDto> computeMovingAverages(final List<AverageDto> averages, final int windowSize) {
+        final DescriptiveStatistics statistics = new DescriptiveStatistics(windowSize);
+        return averages.stream().map(a -> {
+            statistics.addValue(a.getValue());
+            return new AverageDto(a.getTimestamp(), statistics.getMean());
+        }).collect(Collectors.toList());
     }
 }

@@ -62,12 +62,40 @@ paths:
           $ref: '#/components/responses/GetAveragesResponse'
         '404':
           $ref: '#/components/responses/ErrorResponse'
+  /statistics/devices/{device}/moving_avg:
+    parameters:
+      - $ref: '#/components/parameters/device'
+      - $ref: '#/components/parameters/windowSize'
+    get:
+      operationId: get-device-moving-averages
+      summary: 'Return list of 15 minute moving averages for a device.'
+      tags:
+        - Statistics
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAveragesResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
   /statistics/users/{user}/avg:
     parameters:
       - $ref: '#/components/parameters/user'
     get:
       operationId: get-user-averages
       summary: 'Return list of 15 minute averages for a user.'
+      tags:
+        - Statistics
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAveragesResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /statistics/users/{user}/moving_avg:
+    parameters:
+      - $ref: '#/components/parameters/user'
+      - $ref: '#/components/parameters/windowSize'
+    get:
+      operationId: get-user-moving-averages
+      summary: 'Return list of 15 minute moving averages for a user.'
       tags:
         - Statistics
       responses:
@@ -91,6 +119,16 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/deviceId'
+    windowSize:
+      name: window_size
+      description: 'Window size.'
+      in: query
+      required: true
+      example: 2
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
   schemas:
     userId:
       type: string
