@@ -8,7 +8,6 @@ import org.factory.dst.process.exception.NotFoundException;
 import org.factory.dst.process.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -41,9 +40,9 @@ public class StatisticsService {
      * @param device Device id.
      * @throws NotFoundException If no datapoint is found.
      */
-    @Transactional(readOnly = true)
     public List<AverageDto> getAveragesByDevice(final String device) {
-        return computeAverages(datapointRepository.findByDevice(device), "device");
+        List<Datapoint> data = datapointRepository.findByDevice(device);
+        return computeAverages(data, "device");
     }
 
     /**
@@ -66,9 +65,9 @@ public class StatisticsService {
      * @param user User id.
      * @throws NotFoundException If no datapoint is found.
      */
-    @Transactional(readOnly = true)
     public List<AverageDto> getAveragesByUser(final String user) {
-        return computeAverages(datapointRepository.findByUser(user), "user");
+        List<Datapoint> data = datapointRepository.findByUser(user);
+        return computeAverages(data, "user");
     }
 
     /**

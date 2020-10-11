@@ -30,7 +30,7 @@ class DatapointManagementServiceTest {
     }
 
     @Test
-    void deleteByUserSuccess() {
+    void deleteByDeviceNotFound() {
         final String device = "LemarchandsBox";
         Mockito.when(datapointRepository.findFirstByDevice(device)).thenReturn(Optional.empty());
         NotFoundException exception = Assertions.assertThrows(NotFoundException.class, () -> subject.deleteByDevice(device));

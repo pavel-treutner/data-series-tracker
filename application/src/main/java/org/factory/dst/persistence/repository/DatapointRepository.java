@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public interface DatapointRepository extends JpaRepository<Datapoint, Long> {
      * @param device Device id.
      * @return List of items.
      */
+    @Transactional(readOnly = true)
     List<Datapoint> findByDevice(String device);
 
     /**
@@ -53,6 +55,7 @@ public interface DatapointRepository extends JpaRepository<Datapoint, Long> {
      * @param user User id.
      * @return List of items.
      */
+    @Transactional(readOnly = true)
     List<Datapoint> findByUser(String user);
 
     /**
