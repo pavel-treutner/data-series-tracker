@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 /**
  * Datapoint management methods.
  */
 @RestController
+@Validated
 public class DatapointController {
 
     private final DatapointManagementService datapointManagementService;
@@ -48,7 +51,7 @@ public class DatapointController {
      * @return No content.
      */
     @RequestMapping(value = "/devices/{device}/datapoints", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteDatapointsByDevice(@PathVariable("device") String device) {
+    public ResponseEntity<Void> deleteDatapointsByDevice(@Pattern(regexp = DatapointDto.DEVICE_PATTERN) @PathVariable("device") String device) {
         datapointManagementService.deleteByDevice(device);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -60,7 +63,7 @@ public class DatapointController {
      * @return No content.
      */
     @RequestMapping(value = "/users/{user}/datapoints", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteDatapointsByUser(@PathVariable("user") String user) {
+    public ResponseEntity<Void> deleteDatapointsByUser(@Pattern(regexp = DatapointDto.USER_PATTERN) @PathVariable("user") String user) {
         datapointManagementService.deleteByUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

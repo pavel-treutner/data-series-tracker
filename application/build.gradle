@@ -7,6 +7,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.apache.commons:commons-math3'
+    implementation 'javax.validation:validation-api'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

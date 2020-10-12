@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +76,25 @@ public class HandledExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDto.validationError(exception.getMessage(),
                 Collections.singletonList(errorItem)));
+    }
+
+    /**
+     * Handle default validation errors.
+     *
+     * @param exception {@link ConstraintViolationException}
+     * @return {@link ResponseEntity} with information from {@link ConstraintViolationException}.
+     */
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ErrorDto> handleConstraintViolationException(final ConstraintViolationException exception) {
+        logException(exception);
+
+        List<ErrorItemDto> errorItems = Optional.ofNullable(exception.getConstraintViolations())
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(e -> new ErrorItemDto("QUERY_PARAMETER_INVALID_VALUE", e.getPropertyPath().toString(),
+                        "Value '" + e.getInvalidValue() + "' rejected. Field " + e.getMessage() + "."))
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDto.validationError(exception.getMessage(), errorItems));
     }
 
     private String getFieldPath(JsonMappingException exception) {

@@ -5,7 +5,6 @@ import org.factory.dst.persistence.entity.Datapoint;
 import org.factory.dst.persistence.repository.DatapointRepository;
 import org.factory.dst.process.dto.AverageDto;
 import org.factory.dst.process.exception.NotFoundException;
-import org.factory.dst.process.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +49,7 @@ public class StatisticsService {
      *
      * @param device Device id.
      * @param windowSize Window size.
-     * @throws ValidationException On validation errors.
+     * @throws IllegalArgumentException On invalid argument.
      * @throws NotFoundException If no datapoint is found.
      */
     public List<AverageDto> getMovingAveragesByDevice(final String device, final int windowSize) {
@@ -75,7 +74,7 @@ public class StatisticsService {
      *
      * @param user User id.
      * @param windowSize Window size.
-     * @throws ValidationException On validation errors.
+     * @throws IllegalArgumentException On invalid argument.
      * @throws NotFoundException If no datapoint is found.
      */
     public List<AverageDto> getMovingAveragesByUser(final String user, final int windowSize) {
@@ -108,7 +107,7 @@ public class StatisticsService {
 
     private void checkWindowSize(final int windowSize) {
         if (windowSize < 1) {
-            throw new ValidationException("Window size must be greater than 0.");
+            throw new IllegalArgumentException("Window size must be greater than 0.");
         }
     }
 

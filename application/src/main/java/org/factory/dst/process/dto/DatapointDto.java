@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 
 /**
@@ -14,19 +13,27 @@ import java.time.OffsetDateTime;
  */
 public class DatapointDto {
 
+    /**
+     * Device regex pattern.
+     */
+    public static final String DEVICE_PATTERN = "^[a-zA-Z0-9]{1,50}$";
+
+    /**
+     * User regex pattern.
+     */
+    public static final String USER_PATTERN = "^[a-zA-Z0-9]{1,50}$";
+
     @NotNull
     private OffsetDateTime timestamp;
 
     private double value;
 
     @NotNull
-    @Size(min = 1, max = 50)
-    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    @Pattern(regexp = DEVICE_PATTERN)
     private String device;
 
     @NotNull
-    @Size(min = 1, max = 50)
-    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    @Pattern(regexp = USER_PATTERN)
     private String user;
 
     public DatapointDto() {
